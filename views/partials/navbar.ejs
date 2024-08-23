@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-lg bg-light navbar-white">
+    <div class="container">
+        <a href="/home" class="navbar-brand"><img src="./public/images/cartola.png" class="imagemprincipal"> DebsWebHelpDesk</a>
+        <button
+                class="navbar-toggler"
+                role="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbar"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                    <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            id="navbarDropdownMenuLink"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                    ><img src="./public/images/suporte.png" class="imagemprincipal">
+                        Support
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="/faq">Faq</a></li>
+                        <li><a class="dropdown-item" href="/novo-ticket">Ticket</a></li>
+                        <li><a class="dropdown-item" href="/chat">Chat</a></li>
+                        <li><a class="dropdown-item" href="/about">About Us</a></li>
+                    </ul>
+                </li>
+                <%if (user) { %>
+                <li> <a href="/profile" class="nav-link"> <%= user.username %> </a> </li>
+                <li>  <a href="/logout" class="nav-link"><img src="./public/images/sair.png" class="imagemprincipal"> Sair</a> </li>
+                <% } else {%>
+                <li class="nav-item">  <a href="/login" class="nav-link"><img src="./public/images/profile.png" class="imagemprincipal"> Login</a> </li>
+                <%}%>
+            </ul>
+    </div>
+</nav>

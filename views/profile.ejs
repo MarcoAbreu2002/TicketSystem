@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('./partials/header.ejs') %>
+</head>
+<body>
+<%- include('./partials/navbar.ejs') %>
+    <img class= "imagemdefundo" src="./public/images/Background.jpeg">
+<div class="quadradeparaimagemdeperfil">
+    <img class="imagemdeperfil" src="./public/images/imagemdeperfil.png">
+</div>
+<div class="quadradeparainformacao">
+    <p class="textoperfil"> <%= user.username %></p>
+    <p class="textoperfiltickets"> Tickets resolvidos:</p>
+</div>
+<div class="quadradetickets">
+    <% if(tickets.length>0){ %>
+        <% tickets.forEach(ticket =>{ %>
+            <p> <%= ticket.descricao %></p>
+        <% }) %>
+    <% } %>
+</div>
+<%- include('./partials/scripts.ejs') %>
+</body>
+</html>

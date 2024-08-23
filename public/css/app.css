@@ -1,0 +1,346 @@
+.imagemdefundo {
+    width: 100%;
+    position: absolute;
+}
+.imagemerro{
+    position:absolute;
+    left:13%;
+    top: 15%;
+}
+.imagemdeperfil{
+    position:absolute;
+    left: 7%;
+    top: 5%;
+}
+.imagemprincipal{
+    width: 20px;
+    height: 20px;
+}
+.imagemdecoracao{
+    width: 30px;
+    height: 30px;
+}
+.imagemdoticket{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    top: 3%;
+    left: 10%;
+}
+.imagemdochat{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    top: 8%;
+    left: 10%;
+}
+.imagemdafaq{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    top: 10%;
+    left: 10%;
+}
+.imagemdesuporte{
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    top: 2%;
+    left: 5%;
+    opacity: 100% !important;
+}
+#imagemSettings{
+    width: 20px;
+    height: 20px;
+    margin-left: 425px;
+    border: none;
+    background: url("../images/settings.svg") no-repeat;
+}
+section{
+    height: 200px;
+    width: 400px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -220px;
+    margin-left: -200px;
+}
+.novoticket{
+    height: 200px;
+    width: 400px;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    margin-top: -220px;
+    margin-left: -200px;
+}
+#slogan{
+    color: white;
+    height: 200px;
+    width: 900px;
+    position: absolute;
+    top: 50%;
+    left: 42%;
+    margin-top: -250px;
+    margin-left: -320px;
+}
+#slogan2{
+    color: blue;
+    height: 200px;
+    width: 800px;
+    position: absolute;
+    top: 70%;
+    left: 45%;
+    margin-top: -250px;
+    margin-left: -320px;
+    opacity: 100% !important;
+}
+#reg-form-title{
+    margin: 0;
+    padding: 0;
+    font-family: 'Quicksand', sans-serif;
+    color: #444;
+}
+#reg-form,#new-ticket-form{
+    width: 500px;
+    margin: 80px auto auto;
+    padding: 30px;
+    box-shadow: 1px 2px 3px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    background: #d7edfe;
+    position: absolute;
+}
+input{
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 1em;
+    width: 100%;
+}
+label{
+    display: block;
+    margin: 20px 0 10px;
+}
+#reg-form-button{
+    margin-top: 30px;
+    border-radius: 36px;
+    background: #0a51d7;
+    border:0;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 0.8em;
+    display: block;
+    padding: 10px 16px;
+    letter-spacing: 2px;
+    color: white;
+}
+.botoes{
+    position: absolute;
+    top:10%;
+    left:40%;
+}
+.error{
+    color: #ff0099;
+    margin: 10px 2px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+a {
+    border-radius: 25px;
+    margin: 2px;
+    background: #0a51d7;
+    padding: 10px;
+    color: white;
+}
+nav .navbar-nav li a{
+    color: white !important;
+}
+nav .dropdown-menu li a{
+    color: black !important;
+    background-color:#d7edfe !important;
+    width: 95% !important;
+}
+nav .dropdown-menu{
+    background-color:#d7edfe !important;
+}
+.aboutus{
+    position:absolute;
+    left:3%;
+    top: 15%;
+}
+.companhia{
+    position:absolute;
+    left: 3%;
+    top: 25%;
+}
+.Morada {
+    position:absolute;
+    left: 3%;
+    top: 35%;
+}
+.infomorada {
+    position:absolute;
+    left: 3%;
+    top: 40%;
+}
+.contacto {
+    position:absolute;
+    left: 3%;
+    top: 55%;
+}
+.infocontato {
+    position:absolute;
+    left: 3%;
+    top: 60%;
+}
+.diretorregente {
+    position:absolute;
+    left: 3%;
+    top: 69%;
+}
+.infodiretorregente {
+    position:absolute;
+    left: 3%;
+    top: 74%;
+}
+.agentes {
+    position:absolute;
+    left: 3%;
+    top: 79%;
+}
+.quadrade{
+    height: 300px;
+    width: 500px;
+    position: absolute;
+    top: 50%;
+    left: 45%;
+    margin-top: -220px;
+    margin-left: -200px;
+    background-color:white;
+    border-radius: 50px;
+}
+.quadradeparaticket{
+    height: 250px;
+    width: 250px;
+    position: absolute;
+    top: 80%;
+    left: 58%;
+    margin-top: -220px;
+    margin-left: -200px;
+    background-color: blue;
+    border-radius: 50px;
+}
+.botaocontactus{
+    background-color: transparent;
+    border: none;
+}
+.textocontactus{
+    color: white;
+    position: absolute;
+    top: 85%;
+    left:35%;
+}
+.textofaq{
+    color: white;
+    position: absolute;
+    top: 85%;
+    left:45%;
+}
+.quadradeparachat{
+    height: 250px;
+    width: 250px;
+    position: absolute;
+    top: 80%;
+    left: 90%;
+    margin-top: -220px;
+    margin-left: -200px;
+    background-color: blue;
+    border-radius: 50px;
+}
+.quadradeparafaq{
+    height: 250px;
+    width: 250px;
+    position: absolute;
+    top: 80%;
+    left: 25%;
+    margin-top: -220px;
+    margin-left: -200px;
+    background-color: blue;
+    border-radius: 50px;
+}
+.quadradeparaimagemdeperfil{
+    height: 250px;
+    width: 250px;
+    position: absolute;
+    top: 45%;
+    left: 25%;
+    margin-top: -220px;
+    margin-left: -200px;
+    background-color: white;
+    border-radius: 50px;
+}
+.quadradeparainformacao{
+    height: 75px;
+    width: 250px;
+    position: absolute;
+    top: 85%;
+    left: 25%;
+    margin-top: -220px;
+    margin-left: -200px;
+    background-color: white;
+    border-radius: 50px;
+}
+.textoperfil{
+    position:absolute;
+    top: 10%;
+    left: 38%;
+}
+.textoperfiltickets{
+    position:absolute;
+    top: 45%;
+    left: 20%;
+}
+.quadradetickets{
+    height: 650px;
+    width: 1000px;
+    position: absolute;
+    top: 45%;
+    left: 44%;
+    margin-top: -220px;
+    margin-left: -200px;
+    background-color: white;
+    border-radius: 50px;
+}
+.quadradesuporte{
+    height: 400px;
+    width: 1000px;
+    position: absolute;
+    top: 65%;
+    left: 30%;
+    margin-top: -220px;
+    margin-left: -200px;
+    background-color: rgb(255,255,255,50%);
+    border-radius: 50px;
+}
+#chat{
+    max-width: 700px;
+    margin: 30px auto;
+    border: 1px solid #ddd;
+    box-shadow: 1px 3px 5px rgba(0,0,0,0.05);
+    border-radius: 2px;
+}
+#janela{
+    height: 400px;
+    overflow: auto;
+    background: #f9f9f9;
+}
+#output p{
+    padding: 14px 0px;
+    margin: 0 20px;
+    border-bottom: 1px solid #e9e9e9;
+    color: #555;
+}
+.botaochat{
+    width: 100px;
+    height: 100px;
+}

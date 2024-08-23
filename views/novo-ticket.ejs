@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('./partials/header.ejs') %>
+</head>
+<body>
+<%- include('./partials/navbar.ejs') %>
+<section class="novoticket">
+<form id="new-ticket-form"  >
+    <h2 id="reg-form-title">Novo Ticket</h2>
+    <label for="assunto">Assunto:</label>
+    <input type="text" name="assunto" />
+    <%if(!user){%>
+    <label for="solicitante">Solicitante:</label>
+    <input type="text" name="solicitante" />
+    <%}else { %> <input  type="hidden" name="solicitante" value="<%= user.username %>" />  <% } %>
+    <label for="email">Email:</label>
+    <input type="email" name="email" />
+    <label for="categoria">Categoria:</label>
+    <select name="categoria" >
+        <option value="Direção">Direção</option>
+        <option value="Biblioteca">Biblioteca</option>
+        <option value="Cantina/Bar">Cantina/Bar</option>
+        <option value="Gabinete do Estudante">Gabinete do Estudante</option>
+        <option value="Transporte"> Transporte</option>
+    </select>
+
+    <%if (users.length > 0){ %>
+    <label for="agente">Agente:</label>
+    <select name="agente">
+        <%users.forEach(user => { %>
+        <option value="<%= user.username%>" selected><%=user.username%></option>
+            <%})%>
+    </select>
+
+    <%} else{%>
+        <label for="agente">Agente:</label>
+    <select name="agente">
+    <option value="Não Assinado">Não Assinado</option>
+    </select>
+    <%}%>
+
+    <label for="prioridade">Prioridade:</label>
+    <select name="prioridade">
+        <option value="Baixa">1 - Baixa</option>
+        <option value="Normal">2 - Normal</option>
+        <option value="Alta">3 - Alta</option>
+    </select>
+    <label for="Descrição">Descrição:</label>
+    <textarea name="descricao" rows="4" cols="57"></textarea>
+    <button id="reg-form-button" href="/novo-ticket">Enviar</button>
+</form>
+</section>
+<script>
+    const form = document.getElementById('new-ticket-form');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const assunto = form.assunto.value;
+        const solicitante = form.solicitante.value;
+        const email = form.email.value;
+        const categoria = form.categoria.value;
+        const agente = form.agente.value;
+        const prioridade = form.prioridade.value;
+        const descricao = form.descricao.value;
+
+        try{
+            const res = await fetch('/novo-ticket',{
+                method: 'POST',
+                body: JSON.stringify({assunto,solicitante,email,categoria,agente,prioridade,descricao}),
+                headers:{'Content-Type': 'application/json'}
+            });
+            const data = await res.clone().json();
+            console.log('RES:',res.json());
+            location.assign('/profile');
+            console.log('DATA:',data);
+        }catch (err){
+            console.log(err);
+        }
+    });
+</script>
+<%- include('./partials/scripts.ejs') %>
+</body>
+</html>

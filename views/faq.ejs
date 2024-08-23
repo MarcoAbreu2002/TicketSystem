@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('./partials/header.ejs') %>
+</head>
+<body>
+<%- include('./partials/navbar.ejs') %>
+<img class="imagemdefundo" src="./public/images/Background.jpeg" />
+<div class="schema-faq-code" itemscope="" itemtype="https://schema.org/FAQPage" >
+    <form id ="escolhercategoria">
+        <select name="categoria" style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -250px;
+        margin-left: -200px;">
+            <% for(var i=0; i < result.length; i++) { %>
+                <option value="<%= result[i].category%>" selected ><%=JSON.stringify(result[i].category)%></option>
+            <%}%>
+        </select>
+        <button id="reg-form-button" href="/faq" style=" position: absolute;top: 50%;
+        left: 60%; margin-top: -258px;margin-left: -160px;">Escolher Categoria</button>
+    </form>
+    <div style=" position: absolute;
+    top: 55%;
+    left: 25%;
+    margin-top: -220px;
+    margin-left: -200px;">
+        <% for(var i=0; i < result.length; i++) { %>
+        <div class="container mt">
+            <div id="accordion">
+                <div class="card">
+                    <div class="card-header">
+                        <a class="btn" data-bs-toggle="collapse" href="#collapseOne">
+                            <%=JSON.stringify(result[i]) %>
+                        </a>
+                    </div>
+                    <div id="collapseOne" class="collapse show" data-bs-parent="#accordion">
+                        <div class="card-body">
+                            <%=JSON.stringify(result[i])%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% }%>
+    </div>
+    <%if (result.length < 0){ %>
+        <h2 id="slogan">Não existem faqs, acalmate jovem <p> Aqui é tudo espertinho :)</p></h2>
+    <%}%>
+
+    <script>
+        const form = document.getElementById('escolhercategoria');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const categoria = form.categoria.value;
+
+            try{
+                const res = await fetch('/faq',{
+
+                    method: 'POST',
+                    body: JSON.stringify({categoria}),
+                    headers:{'Content-Type': 'application/json'}
+                });
+            }catch (err){
+                console.log(err);
+            }
+        });
+    </script>
+
+    <%- include('./partials/scripts.ejs') %>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('./partials/header.ejs') %>
+</head>
+<body>
+<%- include('./partials/navbar.ejs') %>
+<img class= "imagemdefundo"src="./public/images/Background.jpeg">
+  <h1 id="slogan">Olá, tens algum problema? Estamos aqui para ti...</h1>
+<% if(!user){ %>
+<section>
+        <a href="/create" class="botoes" style="text-decoration:none"><img src="./public/images/criarconta.png" class="imagemprincipal"> Ticket It</a>
+</section>
+<% } %>
+<div class="quadradesuporte">
+    <img class="imagemdesuporte" src="./public/images/suporte1.png"> <h3 id="slogan2"> Suporte:</h3>
+<div class="quadradeparafaq">
+    <form action="faq">
+        <button class="botaocontactus" href="/faq">
+            <img class="imagemdafaq" src="./public/images/faq.png">
+            <p class="textofaq">FAQ</p>
+        </button>
+    </form>
+</div>
+<div class="quadradeparaticket">
+    <form action="novo-ticket">
+        <button class="botaocontactus" href="/novo-ticket">
+            <img class="imagemdoticket" src="./public/images/ticket.png">
+            <p class="textocontactus">Novo Ticket</p>
+        </button>
+    </form>
+</div>
+<div class="quadradeparachat">
+    <form action="chat">
+        <button class="botaocontactus" href="/chat">
+            <img class="imagemdochat" src="./public/images/chat.png">
+            <p class="textocontactus">Sala de chat</p>
+        </button>
+    </form>
+</div>
+</div>
+<%- include('./partials/scripts.ejs') %>
+</body>
+</html>

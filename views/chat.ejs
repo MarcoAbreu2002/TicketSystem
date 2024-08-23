@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+
+    <meta charset="utf-8">
+    <title>DebsWebHelpDesk | Chat </title>
+    <%- include('./partials/header.ejs') %>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+
+
+</head>
+<body>
+<%- include('./partials/navbar.ejs') %>
+
+<div id="chat">
+    <div>
+        <form id="SelecionaSala">
+            <h3>Seleciona a Sala que deseja: </h3>
+            <label for="categoria">Categoria:</label>
+            <select name="categoria">
+                <option  value="Gabinete do Estudante" >Gabinete do Estudante</option>
+                <option  value="Direção" >Direção</option>
+                <option  value="Biblioteca" >Biblioteca</option>
+                <option  value="Cantina-Bar" >Cantina-Bar</option>
+                <option  value="Transporte" >Transporte</option>
+            </select>
+            <button id="join">Send Message</button>
+        </form>
+    </div>
+
+
+   <!-- <form id="chat-form" >-->
+        <div id="janela">
+            <div id="output"></div>
+        </div>
+        <div >
+
+            <%if(!user){%>
+                <label for="solicitante">Solicitante:</label>
+                <input type="text" id = "solicitante" name="solicitante" />
+            <%}else { %> <input  type="hidden" id="solicitante"  name="solicitante" value="<%= user.username %>" />  <% } %>
+            <!--<label for="message"><img src="./public/images/settings.svg"></label>-->
+                <input name="message" id="message"  placeholder="Mensagem"  />
+                <input id="btn-enviar" type="submit" name="enviar">
+        </div>
+    <!--</form>-->
+</div>
+
+<script>
+
+
+
+    /***************************************************
+     * Envia a sala escolhida para o server        *
+     * *************************************************/
+    const form = document.getElementById('SelecionaSala');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const sala = form.categoria.value;
+        console.log(sala);
+        try {
+            const res = await fetch('/chat', {
+
+                method: 'POST',
+                body: JSON.stringify({sala}),
+                headers: {'Content-Type': 'application/json'}
+
+            });//then(res => res.json())
+            const data = await res.clone().json();
+            console.log('RES:', res.json());
+            location.assign('/chat'+'/'+sala);
+            console.log('DATA:', data);
+        }catch (err) { console.log(err)};
+    });
+
+    /***************************************************
+     * Envia as mensagens para o server                *
+     * *************************************************/
+        //const formMess = document.getElementById('chat-form');
+        //formMess.addEventListener('submit', (e)=> {
+
+        //  e.preventDefault();
+    const socket = io("http://localhost:3000");
+    const solicitante = document.getElementById('solicitante');
+    const output = document.getElementById('output');
+    const mensagem = document.getElementById('message');
+    var btn = document.getElementById('btn-enviar');
+
+    /*$("#join").click(function (){
+        var name = $("#solicitante").val();
+            socket.emit("join",name);
+    })*/
+
+
+
+
+
+
+
+    btn.addEventListener('click', async function () {
+        var messagem = mensagem.value;
+        console.log('Mensagem:',messagem);
+        const res = await fetch('/chat',{
+
+            method:'POST',
+            body: JSON.stringify({messagem}),
+            headers:{'Content-Type': 'application/json'}
+
+        }).then(res=>res.json())
+            .catch (err => console.log(err))
+            .then(response => console.log('Sucesso', response,message));
+
+        socket.emit('message', {
+            mensagem: mensagem.value,
+            solicitante: solicitante.value
+        });
+        mensagem.value = "";
+    });
+
+    socket.on('message', function (data) {
+        console.log("DATA: ",data);
+        teste = data.mensagem;
+        output.innerHTML += '<p id="texto-input"><strong>' + data.solicitante + ': </strong> ' + data.mensagem + '<select id="imagemSettings" onchange="getMessage();"  ><option value="apagar" id="apagar">Apagar</option><option value="editar" id="editar">Editar</option> </select> </p>'
+    });
+
+    function getMessage (){
+        var msgs = document.getElementById('imagemSettings');
+        var value = msgs.value;
+        console.log("VALUE:",value);
+        if(value==="editar") {
+            var inpt = document.createElement("INPUT");
+            inpt.setAttribute("type", "text");
+            var x = document.getElementById('texto-input')
+            x.appendChild(inpt);
+            var y = document.getElementById('valor-msg');
+            <%if(messages){%>
+            <%messages.forEach(msg=>{%>
+                console.log('MSG: <%=msg._id%>',teste );
+
+            <%})%>
+        <%}%>
+        }
+
+    }
+
+</script>
+<%- include('./partials/scripts.ejs') %>
+</body>
+</html>
