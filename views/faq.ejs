@@ -2,69 +2,162 @@
 <html lang="en">
 <head>
     <%- include('./partials/header.ejs') %>
+    <style>
+        body {
+            background-image: url('./public/images/Background.jpeg');
+            background-size: cover;
+            background-position: center;
+            color: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 50px auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .faq-header h1 {
+            font-size: 2.5em;
+            color: #007bff;
+        }
+
+        .faq-select-category {
+            margin-bottom: 20px;
+        }
+
+        .faq-select-category select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #007bff;
+            font-size: 1.1em;
+            background-color: #f8f9fa;
+            color: #007bff;
+        }
+
+        .faq-item {
+            margin-bottom: 15px;
+        }
+
+        .faq-item .card {
+            background-color: #f8f9fa;
+            border: 1px solid #007bff;
+        }
+
+        .faq-item .card-header {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .faq-item .card-header a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .faq-item .card-header a:hover {
+            color: #cce5ff;
+        }
+
+        .faq-item .card-body {
+            background-color: #e9ecef;
+            color: #000;
+        }
+
+        #slogan {
+            text-align: center;
+            color: #007bff;
+            margin-top: 50px;
+        }
+
+        #reg-form-button {
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        #reg-form-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-<%- include('./partials/navbar.ejs') %>
-<img class="imagemdefundo" src="./public/images/Background.jpeg" />
-<div class="schema-faq-code" itemscope="" itemtype="https://schema.org/FAQPage" >
-    <form id ="escolhercategoria">
-        <select name="categoria" style="
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-top: -250px;
-        margin-left: -200px;">
-            <% for(var i=0; i < result.length; i++) { %>
-                <option value="<%= result[i].category%>" selected ><%=JSON.stringify(result[i].category)%></option>
-            <%}%>
-        </select>
-        <button id="reg-form-button" href="/faq" style=" position: absolute;top: 50%;
-        left: 60%; margin-top: -258px;margin-left: -160px;">Escolher Categoria</button>
-    </form>
-    <div style=" position: absolute;
-    top: 55%;
-    left: 25%;
-    margin-top: -220px;
-    margin-left: -200px;">
-        <% for(var i=0; i < result.length; i++) { %>
-        <div class="container mt">
-            <div id="accordion">
-                <div class="card">
-                    <div class="card-header">
-                        <a class="btn" data-bs-toggle="collapse" href="#collapseOne">
-                            <%=JSON.stringify(result[i]) %>
-                        </a>
-                    </div>
-                    <div id="collapseOne" class="collapse show" data-bs-parent="#accordion">
-                        <div class="card-body">
-                            <%=JSON.stringify(result[i])%>
+    <%- include('./partials/navbar.ejs') %>
+    
+    <div class="faq-container">
+        <div class="faq-header">
+            <h1>Frequently Asked Questions</h1>
+        </div>
+
+        <form id="escolhercategoria" class="faq-select-category">
+            <select name="categoria">
+                <% if (result.length > 0) { %>
+                    <% result.forEach((item, index) => { %>
+                        <option value="<%= item.category %>" <%= index === 0 ? 'selected' : '' %>><%= item.category %></option>
+                    <% }) %>
+                <% } else { %>
+                    <option value="">No categories available</option>
+                <% } %>
+            </select>
+            <button id="reg-form-button" type="submit">Escolher Categoria</button>
+        </form>
+
+        <div id="faq-accordion">
+            <% if (result.length > 0) { %>
+                <% result.forEach((item, index) => { %>
+                    <div class="faq-item">
+                        <div class="card">
+                            <div class="card-header" id="heading<%= index %>">
+                                <h5 class="mb-0">
+                                    <a data-bs-toggle="collapse" href="#collapse<%= index %>" aria-expanded="true">
+                                        <%= item.question %>
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapse<%= index %>" class="collapse <%= index === 0 ? 'show' : '' %>" data-bs-parent="#faq-accordion">
+                                <div class="card-body">
+                                    <%= item.answer %>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                <% }) %>
+            <% } else { %>
+                <h2 id="slogan">Não existem FAQs, acalme-se jovem <p>Aqui é tudo espertinho :)</p></h2>
+            <% } %>
         </div>
-        <% }%>
     </div>
-    <%if (result.length < 0){ %>
-        <h2 id="slogan">Não existem faqs, acalmate jovem <p> Aqui é tudo espertinho :)</p></h2>
-    <%}%>
 
     <script>
         const form = document.getElementById('escolhercategoria');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const categoria = form.categoria.value;
-
-            try{
-                const res = await fetch('/faq',{
-
+            try {
+                const res = await fetch('/faq', {
                     method: 'POST',
-                    body: JSON.stringify({categoria}),
-                    headers:{'Content-Type': 'application/json'}
+                    body: JSON.stringify({ categoria }),
+                    headers: { 'Content-Type': 'application/json' }
                 });
-            }catch (err){
+            } catch (err) {
                 console.log(err);
             }
         });

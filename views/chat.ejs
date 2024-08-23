@@ -1,151 +1,241 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<html>
 <head>
-
     <meta charset="utf-8">
-    <title>DebsWebHelpDesk | Chat </title>
+    <title>DebsWebHelpDesk | Chat</title>
     <%- include('./partials/header.ejs') %>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
-
-
+    <style>
+        /* CSS Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        #chat {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            flex: 1;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+        #janela {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #output p {
+            margin: 0;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        #output p:last-child {
+            border-bottom: none;
+        }
+        .action-select {
+            margin-left: 10px;
+            font-size: 0.9em;
+        }
+        form {
+            margin-bottom: 10px;
+        }
+        select, input[type="text"], input[type="button"], input[name="message"] {
+            margin-right: 10px;
+            padding: 5px;
+            font-size: 1em;
+        }
+        input[name="message"] {
+            flex: 1;
+        }
+        #btn-enviar {
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 1em;
+        }
+        #btn-enviar:hover {
+            background-color: #0056b3;
+        }
+        h3 {
+            margin: 0 0 10px 0;
+        }
+    </style>
 </head>
 <body>
-<%- include('./partials/navbar.ejs') %>
+    <%- include('./partials/navbar.ejs') %>
 
-<div id="chat">
-    <div>
-        <form id="SelecionaSala">
-            <h3>Seleciona a Sala que deseja: </h3>
-            <label for="categoria">Categoria:</label>
-            <select name="categoria">
-                <option  value="Gabinete do Estudante" >Gabinete do Estudante</option>
-                <option  value="Direção" >Direção</option>
-                <option  value="Biblioteca" >Biblioteca</option>
-                <option  value="Cantina-Bar" >Cantina-Bar</option>
-                <option  value="Transporte" >Transporte</option>
-            </select>
-            <button id="join">Send Message</button>
-        </form>
+    <div id="chat">
+        <div>
+            <form id="SelecionaSala">
+                <h3>Select the room you want:</h3>
+                <label for="categoria">Category:</label>
+                <select name="categoria" id="categoria">
+                    <option value="Gabinete do Estudante">Gabinete do Estudante</option>
+                    <option value="Direção">Direção</option>
+                    <option value="Biblioteca">Biblioteca</option>
+                    <option value="Cantina-Bar">Cantina-Bar</option>
+                    <option value="Transporte">Transporte</option>
+                </select>
+                <button type="button" id="join">Join Room</button>
+            </form>
+        </div>
+
+        <div id="janela">
+            <div id="output" aria-live="polite"></div>
+        </div>
+        <div>
+            <% if (!user) { %>
+                <label for="solicitante">Requester:</label>
+                <input type="text" id="solicitante" name="solicitante" />
+            <% } else { %>
+                <input type="hidden" id="solicitante" name="solicitante" value="<%= user.username %>" />
+            <% } %>
+            
+            <input name="message" id="message" placeholder="Message" />
+            <input id="btn-enviar" type="button" value="Send">
+        </div>
     </div>
 
+    <script>
+// Handle room selection
+const form = document.getElementById('SelecionaSala');
+const joinButton = document.getElementById('join');
 
-   <!-- <form id="chat-form" >-->
-        <div id="janela">
-            <div id="output"></div>
-        </div>
-        <div >
+joinButton.addEventListener('click', () => {
+    const selectedRoom = document.getElementById('categoria').value;
+    if (selectedRoom) {
+        // Store the selected room in the session storage
+        sessionStorage.setItem('currentRoom', selectedRoom);
+        // Redirect or reload to the chat room URL
+        location.assign(`/chat/${selectedRoom}`);
+    } else {
+        alert('Please select a room.');
+    }
+});
 
-            <%if(!user){%>
-                <label for="solicitante">Solicitante:</label>
-                <input type="text" id = "solicitante" name="solicitante" />
-            <%}else { %> <input  type="hidden" id="solicitante"  name="solicitante" value="<%= user.username %>" />  <% } %>
-            <!--<label for="message"><img src="./public/images/settings.svg"></label>-->
-                <input name="message" id="message"  placeholder="Mensagem"  />
-                <input id="btn-enviar" type="submit" name="enviar">
-        </div>
-    <!--</form>-->
-</div>
+// Initialize socket connection
+const socket = io();
+const solicitante = document.getElementById('solicitante');
+const output = document.getElementById('output');
+const mensagem = document.getElementById('message');
+const btn = document.getElementById('btn-enviar');
+const currentRoom = sessionStorage.getItem('currentRoom') || 'default'; // Default room if none
 
-<script>
-
-
-
-    /***************************************************
-     * Envia a sala escolhida para o server        *
-     * *************************************************/
-    const form = document.getElementById('SelecionaSala');
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const sala = form.categoria.value;
-        console.log(sala);
-        try {
-            const res = await fetch('/chat', {
-
-                method: 'POST',
-                body: JSON.stringify({sala}),
-                headers: {'Content-Type': 'application/json'}
-
-            });//then(res => res.json())
-            const data = await res.clone().json();
-            console.log('RES:', res.json());
-            location.assign('/chat'+'/'+sala);
-            console.log('DATA:', data);
-        }catch (err) { console.log(err)};
-    });
-
-    /***************************************************
-     * Envia as mensagens para o server                *
-     * *************************************************/
-        //const formMess = document.getElementById('chat-form');
-        //formMess.addEventListener('submit', (e)=> {
-
-        //  e.preventDefault();
-    const socket = io("http://localhost:3000");
-    const solicitante = document.getElementById('solicitante');
-    const output = document.getElementById('output');
-    const mensagem = document.getElementById('message');
-    var btn = document.getElementById('btn-enviar');
-
-    /*$("#join").click(function (){
-        var name = $("#solicitante").val();
-            socket.emit("join",name);
-    })*/
-
-
-
-
-
-
-
-    btn.addEventListener('click', async function () {
-        var messagem = mensagem.value;
-        console.log('Mensagem:',messagem);
-        const res = await fetch('/chat',{
-
-            method:'POST',
-            body: JSON.stringify({messagem}),
-            headers:{'Content-Type': 'application/json'}
-
-        }).then(res=>res.json())
-            .catch (err => console.log(err))
-            .then(response => console.log('Sucesso', response,message));
+// Handle sending messages
+const sendMessage = async () => {
+    const messagem = mensagem.value.trim();
+    if (!messagem) return; // Prevent sending empty messages
+    console.log('Mensagem:', messagem);
+    console.log('Solicitante: ', solicitante.value);
+    try {
+        const res = await fetch(`/chat/${currentRoom}`, {
+            method: 'POST',
+            body: JSON.stringify({ messagem, solicitante: solicitante.value, room: currentRoom }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!res.ok) throw new Error('Network response was not ok.');
+        const response = await res.json();
+        console.log('Sucesso:', response);
 
         socket.emit('message', {
-            mensagem: mensagem.value,
-            solicitante: solicitante.value
+            _id: response.message._id,
+            messagem: messagem,
+            solicitante: solicitante.value,
+            room: currentRoom
         });
-        mensagem.value = "";
-    });
-
-    socket.on('message', function (data) {
-        console.log("DATA: ",data);
-        teste = data.mensagem;
-        output.innerHTML += '<p id="texto-input"><strong>' + data.solicitante + ': </strong> ' + data.mensagem + '<select id="imagemSettings" onchange="getMessage();"  ><option value="apagar" id="apagar">Apagar</option><option value="editar" id="editar">Editar</option> </select> </p>'
-    });
-
-    function getMessage (){
-        var msgs = document.getElementById('imagemSettings');
-        var value = msgs.value;
-        console.log("VALUE:",value);
-        if(value==="editar") {
-            var inpt = document.createElement("INPUT");
-            inpt.setAttribute("type", "text");
-            var x = document.getElementById('texto-input')
-            x.appendChild(inpt);
-            var y = document.getElementById('valor-msg');
-            <%if(messages){%>
-            <%messages.forEach(msg=>{%>
-                console.log('MSG: <%=msg._id%>',teste );
-
-            <%})%>
-        <%}%>
-        }
-
+        mensagem.value = ""; // Clear input field
+    } catch (err) {
+        console.error('Error:', err);
+        alert('Failed to send message. Please try again.');
     }
+};
 
-</script>
-<%- include('./partials/scripts.ejs') %>
+btn.addEventListener('click', sendMessage);
+
+// Handle ENTER key press in the message input field
+mensagem.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault(); // Prevent the default form submission
+        sendMessage();
+    }
+});
+
+// Handle incoming messages
+socket.on('message', (data) => {
+    if (data.room === currentRoom) { // Check if message belongs to the current room
+        output.innerHTML += `
+            <p id="message-${data._id}">
+                <strong>${data.solicitante}: </strong> ${data.messagem}
+                <select class="action-select" data-id="${data._id}">
+                    <option value="apagar">Delete</option>
+                    <option value="editar">Edit</option>
+                </select>
+            </p>`;
+    }
+});
+
+// Handle message actions (edit/delete)
+document.addEventListener('change', async (e) => {
+    if (e.target && e.target.matches('.action-select')) {
+        const action = e.target.value;
+        const messageId = e.target.getAttribute('data-id');
+
+        if (action === 'editar') {
+            const newContent = prompt('Enter new message content:');
+            if (newContent) {
+                try {
+                    const res = await fetch(`/chat/${currentRoom}/${messageId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({ messagem: newContent }),
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    if (!res.ok) throw new Error('Network response was not ok.');
+                    const response = await res.json();
+                    console.log('Message updated:', response);
+                    document.getElementById(`message-${messageId}`).innerHTML = `
+                        <strong>${response.message.solicitante}: </strong> ${response.message.messagem}
+                        <select class="action-select" data-id="${messageId}">
+                            <option value="apagar">Delete</option>
+                            <option value="editar">Edit</option>
+                        </select>`;
+                } catch (err) {
+                    console.error('Error updating message:', err);
+                    alert('Failed to update message. Please try again.');
+                }
+            }
+        } else if (action === 'apagar') {
+            try {
+                const res = await fetch(`/chat/${currentRoom}/${messageId}`, {
+                    method: 'DELETE'
+                });
+                if (!res.ok) throw new Error('Network response was not ok.');
+                const response = await res.json();
+                console.log('Message deleted:', response);
+                const messageElement = document.getElementById(`message-${messageId}`);
+                if (messageElement) {
+                    messageElement.remove();
+                }
+            } catch (err) {
+                console.error('Error deleting message:', err);
+                alert('Failed to delete message. Please try again.');
+            }
+        }
+    }
+});
+
+    </script>
+    <%- include('./partials/scripts.ejs') %>
 </body>
 </html>

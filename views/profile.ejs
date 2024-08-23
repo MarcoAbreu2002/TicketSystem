@@ -2,24 +2,42 @@
 <html lang="en">
 <head>
     <%- include('./partials/header.ejs') %>
+    <link rel="stylesheet" href="../public/css/styles.css"> <!-- Link to your CSS file -->
 </head>
 <body>
-<%- include('./partials/navbar.ejs') %>
-    <img class= "imagemdefundo" src="./public/images/Background.jpeg">
-<div class="quadradeparaimagemdeperfil">
-    <img class="imagemdeperfil" src="./public/images/imagemdeperfil.png">
-</div>
-<div class="quadradeparainformacao">
-    <p class="textoperfil"> <%= user.username %></p>
-    <p class="textoperfiltickets"> Tickets resolvidos:</p>
-</div>
-<div class="quadradetickets">
-    <% if(tickets.length>0){ %>
-        <% tickets.forEach(ticket =>{ %>
-            <p> <%= ticket.descricao %></p>
-        <% }) %>
-    <% } %>
-</div>
-<%- include('./partials/scripts.ejs') %>
+    <%- include('./partials/navbar.ejs') %>
+
+    <!-- Profile Container -->
+    <div class="profile-container">
+        <!-- Profile Picture -->
+        <div class="profile-image-container">
+            <img class="profile-image" src="../public/images/imagemdeperfil.png" alt="Profile Image">
+        </div>
+        
+        <!-- Profile Information -->
+        <div class="profile-info">
+            <h1 class="profile-username"><%= user.username %></h1>
+            <p class="profile-email"><%= user.email %></p> <!-- Optional: User Email -->
+            <p class="profile-bio"><%= user.bio %></p> <!-- Optional: User Bio -->
+        </div>
+        
+        <!-- Tickets Section -->
+        <div class="tickets-container">
+            <h2 class="tickets-header">Tickets Resolved:</h2>
+            <% if (tickets && tickets.length > 0) { %>
+                <ul class="tickets-list">
+                    <% tickets.forEach(ticket => { %>
+                        <li class="ticket-item">
+                            <p><%= ticket.descricao %></p>
+                        </li>
+                    <% }) %>
+                </ul>
+            <% } else { %>
+                <p class="no-tickets">No tickets found.</p>
+            <% } %>
+        </div>
+    </div>
+    
+    <%- include('./partials/scripts.ejs') %>
 </body>
 </html>

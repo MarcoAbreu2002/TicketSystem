@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on("entrouChat", (roomName) => {
-        socket.join(roomName);
+        socket.join(roomName);  
         socket.emit("entrou", "Entered the chat");
     });
 });
